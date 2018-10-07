@@ -173,16 +173,18 @@ REQUEST_TYPE = {
 
 FEEDER_PULL_CHANNEL = '/petprototype/feeder/pull/'
 
-FEEDER_PUSH_CHANNEL = '/petprototype/feeder/{id}/push/'
+FEEDER_PUSH_CHANNEL = '/petprototype/feeder/push/'
+
+FEEDER_PUSH_CHANNEL_ID = FEEDER_PUSH_CHANNEL + '{id}/'
 
 DB_UPDATE_CHANNEL = '/petprototype/db/update/'
 
 
 # MQTT Broker URL
 
-MQTT_BROKER_ADDRESS = ""
+MQTT_BROKER_ADDRESS = "ec2-13-57-38-126.us-west-1.compute.amazonaws.com"
 
-MQTT_BROKER_PORT =  ""
+MQTT_BROKER_PORT =  1883
 
 
 # MQTT Function Ids
@@ -190,7 +192,7 @@ MQTT_BROKER_PORT =  ""
 FEEDER_PUSH_FUNCTIONS = {
     "FEED" : "0001",     # bowl weight change
     "DISPENSE" : "0002", # dispense food
-    "UPDATE" : "0003",   # settings change
+    "SYNC" : "0003",   # settings change
 }
 
 FEEDER_PULL_FUNCTIONS = {

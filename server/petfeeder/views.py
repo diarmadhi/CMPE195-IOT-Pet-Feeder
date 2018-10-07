@@ -33,7 +33,8 @@ class PetFeederViewSet(viewsets.ModelViewSet):
         feeder_query = PetFeeder.objects.filter(id=kwargs['pk'])
         if feeder_query:
             serial_id = feeder_query[0].serial_id
-            mqtt_utils.feeder_update_fields(serial_id, request.data)
+            #mqtt_utils.feeder_update_fields(serial_id, request.data)
+            mqtt_utils.feeder_sync(serial_id)
 
         return super().update(request, *args, **kwargs)
 
