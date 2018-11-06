@@ -11,6 +11,7 @@ from petfeeder.models import PetFeeder, PetFood, Pet, FoodDispenserAction, UserR
 from petfeeder.serializers import *
 from petfeeder.permissions import IsOwner
 from petfeeder import mqtt_utils
+import datetime
 import json
 
 from rest_framework import permissions
@@ -30,6 +31,13 @@ class CreateUserView(generics.CreateAPIView):
 class PetFeederViewSet(viewsets.ModelViewSet):
     serializer_class = PetFeederSerializer
     permission_classes = (IsOwner, permissions.IsAuthenticated,)
+
+    def dispatch(self, request, *args, **kwargs):
+        import pprint
+        #pprint.pprint(vars(request))
+        pprint.pprint(request.content_type)
+        pprint.pprint(request.body)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         user = self.request.user
@@ -66,8 +74,8 @@ class PetViewSet(viewsets.ModelViewSet):
         return Pet.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
-        import pprint
-        pprint.pprint(vars(request))
+        #import pprint
+        #pprint.pprint(vars(request))
         #print(request.content_type)
         #print(request.body)
         return super().dispatch(request, *args, **kwargs)
@@ -131,6 +139,12 @@ def PetConsumptionSummary(request):
     user = request.user
     if not user.is_authenticated:
         return Response({"message": "User not authenticated"});
+    length = request.query_params.get('length')
+    if length != None and length.isdigit():
+        length = int(length)
+    else:
+        length = 14
+    
     pet = Pet.objects.filter(id=request.query_params.get('pet'))
     if len(pet) != 1:
         return Response({"message": "Pet not found"})
@@ -139,12 +153,26 @@ def PetConsumptionSummary(request):
         return Response({"message": "Pet does not belong to user"})
     consumption = PetConsumptionAction.objects.filter(pet=pet)
 
+    # max date based on latest feeding
+    '''
+    if len(consumption) > 0:
+        max_date = consumption[0].time.date()
+    for action in consumption:
+        max_date = max(action.time.date(), max_date)
+    max_date = max_date + datetime.timedelta(days=1)
+    '''
+
+    max_date = datetime.datetime.now()
+
     consumption_map = {}
+    for i in range(length):
+        consumption_map[max_date - datetime.timedelta(days=i)] = 0
 
     for action in consumption:
         date = action.time.date()
         if date not in consumption_map:
-            consumption_map[date] = 0
+            continue
+            #consumption_map[date] = 0
 
         food = action.food
         # food.density = mass per cup

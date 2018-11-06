@@ -84,7 +84,7 @@ def publish(channel, payload):
 def push(feeder_id, data_dict):
     data_dict['request_id'] = str(uuid.uuid4())
     json_obj = json.dumps(data_dict)
-    print("WARNING: PUSH IS NOT ENABLED. ENABLE IN mqtt_utils.py")
+    #print("WARNING: PUSH IS NOT ENABLED. ENABLE IN mqtt_utils.py")
     print(feeder_id)
     print(json_obj)
     publish(settings.FEEDER_PUSH_CHANNEL_ID.format(id=feeder_id), payload=json_obj)
@@ -105,6 +105,7 @@ def feeder_sync(serial_id):
               serial_id)
         return
     feeder = feeders[0]
+    data["chip_id"] = feeder.pet.chip_id
     data["setting_cup"] = feeder.setting_cup
     data["setting_interval"] = feeder.setting_interval
 

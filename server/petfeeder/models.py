@@ -32,7 +32,7 @@ class PetFeeder(models.Model):
 
 class Pet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    chip_id = models.BigIntegerField(blank=False)
+    chip_id = models.CharField(blank=False, max_length=settings.PET_RFID_LENGTH)
     pet_type = models.CharField(blank=True, default='', max_length=settings.PET_TYPE_LENGTH)
     pet_breed = models.CharField(blank=True, default='', max_length=settings.PET_BREED_LENGTH)
     name = models.CharField(blank=True, default='', max_length=settings.NAME_LENGTH)
