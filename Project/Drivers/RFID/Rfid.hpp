@@ -27,7 +27,7 @@ public:
 	{
 		while (serialDataAvail(handle))
 		{
-			read_tag[serialDataAvail(handle)] = serialGetChar(handle);
+			read_tag[serialDataAvail(handle)] = serialGetchar(handle);
 		}
 
 		return read_tag;
@@ -50,6 +50,10 @@ public:
 
 	Rfid()
 	{
+		for (uint8_t i = 0; i < 6; i++)
+		{
+			read_tag[i] = 0;
+		}
 	}
 
 	~Rfid()
@@ -60,6 +64,6 @@ private:
 	uint8_t programmed_tag[6];
 	uint8_t read_tag[6];
 	uint8_t handle = 0;
-}
+};
 
 
