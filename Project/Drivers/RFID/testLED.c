@@ -6,6 +6,8 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <unistd.h>
+#include <string.h>
+#include "Rfid.hpp"
 
 using namespace std;
 
@@ -13,14 +15,41 @@ int main(void){
 	wiringPiSetup();
 	int choice;
 	pinMode(4, OUTPUT);
-	pinMode(5, INPUT);
-	int output = 5;
+	pinMode(5, OUTPUT);
+	digitalWrite(4, LOW);
+	digitalWrite(5, LOW);
+
+	Rfid test;
+//	uint8_t tag[6] = {0x18, 0x09, 0x00, 0x00, 0x91, 0x80};
+//	uint8_t *compare;
+	string tag = "55003AAA8540";
+	string compare;
+
+//printf("test tag: %s\n", tag.c_str());  //works for printing strings
+
+	test.Initialize();
+	test.SetTag(tag);
+
 	printf("Starting Program\n");
 
 	while(true){
-		printf("\n1. GPIO ON\n2. GPIO OFF\n3. READ GPIO\n");
-        	scanf("%d", &choice);
-        	switch(choice){
+		test.GetTag(compare);
+		if (test.CompareTag(tag, compare))
+		{
+			printf("Tags Match! Blue LED is on\n");
+			digitalWrite(4, HIGH);
+			digitalWrite(5, LOW):
+			compare = "0"; 	
+		} 
+		else if (!test.CompareTag(tag, compare) && compare != "0")
+		{
+			printf("Tags don's match. Red LED is on\n");
+			digitalWrite(4, LOW);
+			digitalWrite(5, HIGH);
+			compare = "0";
+		} 
+
+		switch(choice){
            		case 1:
 				digitalWrite(4, HIGH);
               	  		break;
