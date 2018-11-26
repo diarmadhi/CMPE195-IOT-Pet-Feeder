@@ -53,7 +53,7 @@ public:
 //				tag += read_tag[i];	//works
 				tag += (char) serialGetchar(handle);  //works <-better option
 			}
-			tag = tag.substr(1,13);
+			tag = tag.substr(2,12);
 //	printf("%s\n", tag.c_str());
 		} else tag = "0";
 
