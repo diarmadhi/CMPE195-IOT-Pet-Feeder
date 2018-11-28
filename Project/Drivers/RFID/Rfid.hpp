@@ -3,6 +3,8 @@
 #include <wiringSerial.h>
 #include <string>
 #include <errno.h>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -16,30 +18,22 @@ public:
 		{
 			printf("Initialize error: %s\n", strerror(errno));
 		}
-//		else {
-//			for (uint8_t i = 0; i < 6; i++)
-//			{
-//				programmed_tag[i] = 0;
-//				read_tag[i] = 0;
-//			}
-//		}
 	}
 
-//	void SetTag(uint8_t *tag)
 	void SetTag(string &tag)
 	{
-//		for (uint8_t i = 0; i < 6; i++)
-//		{
-//			programmed_tag[i] = tag[i];
-		programmed_tag = tag;
-//		}
+		string temp = "0002520309";
+		uint32_t convert = stoul(temp, nullptr); //convert string to uint - "1234" to 1234
+		stringstream ss; //used to create a hex based string from convert
+
+		ss << uppercase << hex << setw(8) << setfill('0') << convert; //creates an 8 digit hex stream of convert with leading zeros
+		programmed_tag = ss.str(); //converts stream to string
 	}
 	
-//	uint8_t * GetTag()
+
 	void GetTag(string &tag)
 	{
 		int dataAvailable = serialDataAvail(handle);	//works
-		char read_tag[dataAvailable];
 
 		if (dataAvailable == -1)
 		{
@@ -48,31 +42,19 @@ public:
 		else if (dataAvailable > 8) {  //reader outputs 16 bytes for tag id
 			for (int i = 0; i < dataAvailable; i++)	//pull data from rx reg
 			{
-//	printf("%c",(char) serialGetchar(handle));
-//				read_tag[i] = serialGetchar(handle);	//works
-//				tag += read_tag[i];	//works
 				tag += (char) serialGetchar(handle);  //works <-better option
 			}
-			tag = tag.substr(2,12);
-//	printf("%s\n", tag.c_str());
+			tag = tag.substr(4,8);
+
 		} else tag = "0";
 
-//		return read_tag;
 	}
 
-	bool CompareTag(string &tag1, string &tag2)
+	bool CompareTag(string &tag)
 	{
 		uint8_t match = 0;
-//		for (uint8_t i = 0; i < 6; i++)
-//		{
-//			if (programmed_tag[i] != read_tag[i])
-//			{
-//				match = 0;
-//				return match;
-//			}
-//			match = 1;
-//		}
-		if (tag1 != tag2)
+
+		if (tag != programmed_tag)
 			match = 0;
 		else match = 1;
 		return match;
@@ -80,10 +62,6 @@ public:
 
 	Rfid()
 	{
-//		for (uint8_t i = 0; i < 6; i++)
-//		{
-//			read_tag[i] = 0;
-//		}
 	}
 
 	~Rfid()
@@ -91,10 +69,7 @@ public:
 	}
 
 private: 
-//	uint8_t programmed_tag[6];
-//	uint8_t read_tag[16];
 	string programmed_tag;
-//	string read_tag;
 	int handle = 0;
 };
 

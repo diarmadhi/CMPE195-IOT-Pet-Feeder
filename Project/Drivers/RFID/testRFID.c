@@ -34,7 +34,7 @@ printf("test tag: %s\n", tag.c_str());  //works for printing strings
 
 	while(true){
 		test.GetTag(compare);
-		if (test.CompareTag(tag, compare))
+		if (test.CompareTag(compare))
 		{
 printf("compare tag: %s\n", compare.c_str());
 			printf("Tags Match! Blue LED is on\n");
@@ -42,7 +42,7 @@ printf("compare tag: %s\n", compare.c_str());
 			digitalWrite(5, LOW);
 			compare = "0"; 	
 		} 
-		else if (!test.CompareTag(tag, compare) && compare != "0")
+		else if (!test.CompareTag(compare) && compare != "0")
 		{
 printf("compare tag: %s\n", compare.c_str());
 //printf("size of compare: %d\n", compare.size());
